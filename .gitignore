@@ -125,6 +125,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+printerData.jsonc
 
 # Spyder project settings
 .spyderproject

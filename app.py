@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-import random, time, threading
+import time, threading
 
 import utils.monitor as m
 import utils.encoder as e
@@ -8,26 +8,22 @@ import utils.encoder as e
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-
 def send_data():
     while True:
-        data = {
-            'values': m.data_dump, 
-            "image" : e.encode(m.latest_frame)
-            }
-        #print(data)
-        socketio.emit('update', data)
+        if m.heartbeat_active:
+            data = m.data_dump
+            socketio.emit('update', data)
         time.sleep(2)
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/set_light', methods=['POST'])
-def set_light():
-    return {"status": "ok", "value": m.toggle_light()}
-
+@app.route('/set_light/<serial>', methods=['POST'])
+def set_light(serial):
+    return {"status": "ok", "value": m.toggle_light(serial)}
 
 
 if __name__ == '__main__':

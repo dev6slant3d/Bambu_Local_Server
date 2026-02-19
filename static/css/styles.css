@@ -1,68 +1,68 @@
-body { 
+body {
     background-color: #111;
     color: #eee;
     text-align: center;
     font-family: Arial, sans-serif;
     margin: 0;
     overflow: hidden;
-    position: relative; /* Make body a positioned container */
+    position: relative;
+    /* Make body a positioned container */
 
     display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center;    /* Centers vertically */
-  min-height: 100vh;      /* Ensures the body takes full viewport height */
-  margin: 0;
+    justify-content: center;
+    /* Centers horizontally */
+    align-items: center;
+    /* Centers vertically */
+    min-height: 100vh;
+    /* Ensures the body takes full viewport height */
+    margin: 0;
 }
 
 img {
     border: 2px solid #444653;
-    display: block;      /* Horizontally center the image */
-    max-width: 70vw;           /* Keep original aspect ratio */
-    height: 80vh;          /* 80% of viewport height */
-    object-fit: cover;     /* Cover the space while maintaining aspect ratio */
-    object-position: center center; /* Center horizontally, align top vertically */
+    display: block;
+    /* Horizontally center the image */
+    max-width: 70vw;
+    /* Keep original aspect ratio */
+    height: 80vh;
+    /* 80% of viewport height */
+    object-fit: cover;
+    /* Cover the space while maintaining aspect ratio */
+    object-position: center center;
+    /* Center horizontally, align top vertically */
 }
 
 #header {
     position: absolute;
-    top: 0;               /* Stick to the top */
+    top: 0;
+    /* Stick to the top */
     left: 0;
-    width: 100%;          /* Full width across the image */
-    background-color: rgba(53, 53, 53, 0.5); /* Semi-transparent aqua overlay */
+    width: 100%;
+    /* Full width across the image */
+    background-color: rgba(53, 53, 53, 0.5);
+    /* Semi-transparent aqua overlay */
     padding: 1rem 0;
-    z-index: 10;          /* Ensure it stays above the image */
-}
-
-#footer {
-    position: absolute;
-    bottom: 0;               /* Stick to the top */
-    left: 0;
-    width: 100%;          /* Full width across the image */
-    padding: 1rem 0;
-    z-index: 10;          /* Ensure it stays above the image */
+    z-index: 10;
+    /* Ensure it stays above the image */
 }
 
 #mainer {
-    position: absolute;
-    bottom: 5%;               /* Stick to the top */
-    left: 2%;
-    width: 100%;          /* Full width across the image */
+    width: 100%;
+    /* Full width across the image */
     text-align: left;
-    padding: 1rem 0;
-    z-index: 10;          /* Ensure it stays above the image */
+    padding: 0.5rem;
+    z-index: 10;
+    /* Ensure it stays above the image */
     font-weight: bold;
     font-size: larger;
 }
 
 button {
-    position: absolute; 
-  right: 10%; 
-  bottom: 50%; 
-  padding: 10px 20px;
-  font-size: larger;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer; 
+    padding: 10px 20px;
+    font-size: larger;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 button.lighton {
@@ -75,11 +75,25 @@ button.lighton {
     color: rgb(71, 71, 71);
 }
 
-
-
 h1 {
     margin: 0;
     font-size: 2rem;
     text-align: left;
     padding-left: 5%;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
 }
