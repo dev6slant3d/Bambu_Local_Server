@@ -65,16 +65,6 @@ button {
     cursor: pointer;
 }
 
-button.lighton {
-    background-color: #ffd000;
-    color: white;
-}
-
-button.lighton {
-    background-color: #ffea8e;
-    color: rgb(71, 71, 71);
-}
-
 h1 {
     margin: 0;
     font-size: 2rem;

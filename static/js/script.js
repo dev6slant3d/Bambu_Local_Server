@@ -41,32 +41,7 @@ function light(serial) {
         }
         return response.json(); // Parse the response as JSON
     })
-        .then(data => {
-            console.log("Fetched data:", data); // Print the parsed data
-            const button = document.getElementById("light_switch")
-            if (data.value == 'on') {
-                button.classList.add('lighton')
-                if (button.classList.contains('lightoff')) {
-                    button.classList.remove('lightoff');
-                }
-            } else {
-                button.classList.add('lightoff')
-                if (button.classList.contains('lighton')) {
-                    button.classList.remove('lighton');
-                }
-            }
-        })
         .catch(error => {
             console.error("Error during fetch operation:", error); // Handle any errors
         });
-}
-
-// Send a new value to the server
-function updateValue() {
-    var val = document.getElementById("valueInput").value;
-    fetch('/set_value', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'value=' + val
-    });
 }

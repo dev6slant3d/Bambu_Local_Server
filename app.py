@@ -6,7 +6,7 @@ import utils.monitor as m
 import utils.encoder as e
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 def send_data():
     while True:
@@ -26,10 +26,15 @@ def set_light(serial):
     return {"status": "ok", "value": m.toggle_light(serial)}
 
 
+@socketio.on('command')
+def handle_command(data):
+    return {"status": "ok", "value": m.handle_command(data)}
+
+
 if __name__ == '__main__':
     # Start your background threads
     threading.Thread(target=m.main, daemon=True).start()
     threading.Thread(target=send_data, daemon=True).start()
 
     # Only run one server
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+    socketio.run(app, host='0.0.0.0', port=5001, debug=False)

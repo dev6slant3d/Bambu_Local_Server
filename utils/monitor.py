@@ -3,6 +3,9 @@ import threading
 import bambulabs_api as bl
 import atexit
 from jsonc_parser.parser import JsoncParser
+from io import BytesIO
+import zipfile
+import os
 
 data_dump = []
 printers = []
@@ -18,12 +21,12 @@ def load_printers():
     for serial, details in printerData.items():
         printer = {}
 
-        hostname, access_code, has_camera = details
-        object = bl.Printer(hostname, access_code, serial)
+        IP, access_code, has_camera = details
+        object = bl.Printer(IP, access_code, serial)
         atexit.register(object.disconnect)
         object.connect()
-        print("Connecting to printer %s...", serial)
-        time.sleep(2)
+        print("Connecting to printer: ", serial)
+        time.sleep(3)
 
         printer["serial"] = serial
         printer["has_camera"] = has_camera
@@ -67,6 +70,7 @@ def data_heartbeat():
                 dump["total_layer_num"] = printer["object"].total_layer_num()
                 dump["bed_temperature"] = printer["object"].get_bed_temperature()
                 dump["nozzle_temperature"] = printer["object"].get_nozzle_temperature()
+                dump["print_speed"] = printer["object"].get_print_speed()
                 dump["remaining_time"] = printer["object"].get_time()
                 
                 index = getPrinterDataDumpIndex(printer["serial"])
@@ -89,7 +93,7 @@ def camera_heartbeat():
         for printer in printers:
             if printer["has_camera"] == True:
                 try:              
-                    latest_frame = printer.get_camera_image()
+                    latest_frame = printer["object"].get_camera_image()
                     index = getPrinterDataDumpIndex(printer["serial"])
                     if index != -1:
                         updatedDump = data_dump[index]
@@ -121,8 +125,67 @@ def getPrinterIndex(serial):
     return -1
 
 
+def create_zip_archive_in_memory(text_content: str, text_file_name: str = 'file.txt') -> BytesIO:
+    """
+    Create a zip archive in memory
+
+    Args:
+        text_content (str): content of the text file
+        text_file_name (str, optional): location of the text file.
+            Defaults to 'file.txt'.
+
+    Returns:
+        io.BytesIO: zip archive in memory
+    """
+
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipf.writestr(text_file_name, text_content)
+    zip_buffer.seek(0)
+    return zip_buffer
+
+
+def handle_command(data):
+    """Handle a printer command."""
+    global printers
+
+    print('Received command:', data)
+
+    type = data["type"]
+    serial = data["serial"]
+    filepath = data["filepath"]
+
+    index = getPrinterIndex(serial)
+    if index == -1:
+        return
+    
+    printer = printers[index]["object"]
+
+    if type == 'startPrint':
+        start_print(printer, filepath)
+
+
+def start_print(printer, filepath):
+    """Start print on printer."""
+
+    with open(filepath, "r") as file:
+        gcode = file.read()
+    
+    io_file = create_zip_archive_in_memory(gcode, filepath)
+    if file:
+        filename = os.path.basename(filepath)
+        result = printer.upload_file(io_file, filename)
+        if "226" not in result:
+            print("Error Uploading File to Printer")
+
+        else:
+            print("Done Uploading/Sending Start Print Command")
+            printer.start_print(filename, filepath)
+            print("Start Print Command Sent")
+
+
 def toggle_light(serial):
-    """Toggle the printer light and return its new state."""
+    """Toggle the printer light."""
     global printers
     
     index = getPrinterIndex(serial)
@@ -138,8 +201,6 @@ def toggle_light(serial):
     else:
         print('[TOGGLING PRINTER LIGHT ON]')
         printer.turn_light_on()
-    
-    return light_state
 
 
 def main():
