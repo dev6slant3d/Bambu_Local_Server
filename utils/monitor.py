@@ -168,19 +168,40 @@ def handle_command(data):
 def start_print(printer, filepath):
     """Start print on printer."""
 
-    with open(filepath, "r") as file:
-        gcode = file.read()
-    
-    io_file = create_zip_archive_in_memory(gcode, filepath)
-    if file:
-        filename = os.path.basename(filepath)
-        result = printer.upload_file(io_file, filename)
-        if "226" not in result:
-            print("Error Uploading File to Printer")
+    INPUT_FILE_PATH = 'bambulab_api_example.gcode'
+    UPLOAD_FILE_NAME = 'bambulab_api_example.3mf'
 
+    path = filepath
+    while True:
+        try:
+            with open(path, "r") as file:
+                gcode = file.read()
+            break
+        except FileNotFoundError:
+            if path.startswith('..\\'):
+                path = path[3:]
+            else:
+                raise FileNotFoundError(f"Could not find file: {filepath}")
+    
+    gcode_location = INPUT_FILE_PATH
+    io_file = create_zip_archive_in_memory(gcode, gcode_location)
+
+    if gcode:
+        try:
+            result = printer.upload_file(io_file, UPLOAD_FILE_NAME)
+        except Exception as e:
+            print(f"Exception during upload: {e}")
+            return
+
+        if result is None:
+            print("Error Uploading File to Printer: upload returned None")
+            return
+
+        if "226" not in result:
+            print(f"Error Uploading File to Printer: {result}")
         else:
             print("Done Uploading/Sending Start Print Command")
-            printer.start_print(filename, filepath)
+            printer.start_print(UPLOAD_FILE_NAME, gcode_location)
             print("Start Print Command Sent")
 
 
