@@ -26,7 +26,8 @@ def load_printers():
         atexit.register(object.disconnect)
         object.connect()
         print("Connecting to printer: ", serial)
-        time.sleep(3)
+        time.sleep(5)
+        print("PRINTER READY: ", serial)
 
         printer["serial"] = serial
         printer["has_camera"] = has_camera
@@ -168,9 +169,7 @@ def handle_command(data):
 def start_print(printer, filepath):
     """Start print on printer."""
 
-    INPUT_FILE_PATH = 'bambulab_api_example.gcode'
-    UPLOAD_FILE_NAME = 'bambulab_api_example.3mf'
-
+    filename = os.path.basename(filepath)
     path = filepath
     while True:
         try:
@@ -182,27 +181,19 @@ def start_print(printer, filepath):
                 path = path[3:]
             else:
                 raise FileNotFoundError(f"Could not find file: {filepath}")
-    
-    gcode_location = INPUT_FILE_PATH
-    io_file = create_zip_archive_in_memory(gcode, gcode_location)
 
+    gcode_location = 'Metadata/plate_1.gcode'
+    io_file = create_zip_archive_in_memory(gcode, gcode_location)
     if gcode:
         try:
-            result = printer.upload_file(io_file, UPLOAD_FILE_NAME)
+            printer.upload_file(io_file, filename)
         except Exception as e:
             print(f"Exception during upload: {e}")
             return
-
-        if result is None:
-            print("Error Uploading File to Printer: upload returned None")
-            return
-
-        if "226" not in result:
-            print(f"Error Uploading File to Printer: {result}")
-        else:
-            print("Done Uploading/Sending Start Print Command")
-            printer.start_print(UPLOAD_FILE_NAME, gcode_location)
-            print("Start Print Command Sent")
+        
+        print("Upload done, starting print...")
+        printer.start_print(filename, 1)
+        print("Start Print Command Sent")
 
 
 def toggle_light(serial):
