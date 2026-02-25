@@ -6,6 +6,7 @@ socket.on('update', (data) => {
         <h3>Printer: ${printer.serial}</h3>
         <p>FILE: ${printer.file}</p>
         <p>STATUS: ${printer.status}</p>
+        <p>PRINT STATUS: ${printer.print_status}</p>
         <p>% COMPLETE: ${printer.percentage}%</p>
         <p>LAYER: ${printer.layer_num}/${printer.total_layer_num}</p>
         <p>BED TEMP: ${printer.bed_temperature}°C</p>

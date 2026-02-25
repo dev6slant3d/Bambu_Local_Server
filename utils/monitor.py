@@ -66,6 +66,7 @@ def data_heartbeat():
                 dump["serial"] = printer["serial"]
                 dump["file"] = printer["object"].gcode_file()
                 dump["status"] = printer["object"].get_state()
+                dump["print_status"] = str(printer["object"].get_current_state())
                 dump["percentage"] = printer["object"].get_percentage()
                 dump["layer_num"] = printer["object"].current_layer_num()
                 dump["total_layer_num"] = printer["object"].total_layer_num()
@@ -73,6 +74,7 @@ def data_heartbeat():
                 dump["nozzle_temperature"] = printer["object"].get_nozzle_temperature()
                 dump["print_speed"] = printer["object"].get_print_speed()
                 dump["remaining_time"] = printer["object"].get_time()
+                dump["error_code"] = printer["object"].print_error_code()
                 
                 index = getPrinterDataDumpIndex(printer["serial"])
                 if index == -1:
