@@ -75,6 +75,7 @@ def data_heartbeat():
                 dump["print_speed"] = printer["object"].get_print_speed()
                 dump["remaining_time"] = printer["object"].get_time()
                 dump["error_code"] = printer["object"].print_error_code()
+                dump["subtask"] = printer["object"].subtask_name()
                 
                 index = getPrinterDataDumpIndex(printer["serial"])
                 if index == -1:
@@ -156,7 +157,10 @@ def handle_command(data):
 
     type = data["type"]
     serial = data["serial"]
-    filepath = data["filepath"]
+    try:
+        filepath = data["filepath"]
+    except KeyError:
+        filepath = None  
 
     index = getPrinterIndex(serial)
     if index == -1:
