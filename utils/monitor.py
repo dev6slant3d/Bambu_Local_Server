@@ -211,16 +211,22 @@ def start_print(printer, filepath):
 def pause_print(printer):
     """Pause a printer from printing."""
 
+    print('Pausing Print: ', printer)
+
     printer.pause_print()
     
 def resume_print(printer):
     """Resume a printer printing."""
+
+    print('Resuming Print: ', printer)
 
     printer.resume_print()
 
 
 def stop_print(printer):
     """Stop a printer from printing."""
+
+    print('Stopping Print: ', printer)
 
     printer.stop_print()
 
