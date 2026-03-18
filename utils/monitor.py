@@ -166,6 +166,12 @@ def handle_command(data):
 
     if type == 'startPrint':
         start_print(printer, filepath)
+    elif type == 'pausePrint':
+        pause_print(printer)
+    elif type == 'resumePrint':
+        resume_print(printer)
+    elif type == 'stopPrint':
+        stop_print(printer)
 
 
 def start_print(printer, filepath):
@@ -196,6 +202,23 @@ def start_print(printer, filepath):
         print("Upload done, starting print...")
         printer.start_print(filename, 1)
         print("Start Print Command Sent")
+
+
+def pause_print(printer):
+    """Pause a printer from printing."""
+
+    printer.pause_print()
+    
+def resume_print(printer):
+    """Resume a printer printing."""
+
+    printer.resume_print()
+
+
+def stop_print(printer):
+    """Stop a printer from printing."""
+
+    printer.stop_print()
 
 
 def toggle_light(serial):
